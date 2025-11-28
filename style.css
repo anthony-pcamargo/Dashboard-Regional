@@ -282,6 +282,21 @@ body {
     cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif;
 }
 .btn-login:hover { background-color: #002299; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 25, 112, 0.3); }
+.btn-login:disabled { background-color: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* MENSAGEM DE ERRO NO LOGIN */
+.error-msg {
+    background-color: #fef2f2;
+    color: var(--color-red);
+    border: 1px solid #fee2e2;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
 
 /* Mobile */
 @media (max-width: 768px) {
