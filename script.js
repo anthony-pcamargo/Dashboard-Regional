@@ -1,4 +1,8 @@
-// --- BANCO DE DADOS SIMULADO ---
+// --- CONFIGURAÇÃO ---
+// COLOQUE AQUI A URL DO SEU WEBHOOK DO N8N (Method: POST)
+const N8N_WEBHOOK_URL = "https://primary-production-f8d8.up.railway.app/webhook-test/login"; 
+
+// --- BANCO DE DADOS SIMULADO (DADOS DO DASHBOARD) ---
 const dadosDashboard = {
     contratosQuitados: [
         { nome: "Academia Fitness Plus", valor: 5000, data: "2023-10-01" },
@@ -64,7 +68,8 @@ function toggleMenu() {
 }
 
 function logout() {
-    // Simula logout e vai para login
+    // Remove o token e redireciona
+    localStorage.removeItem("jwt_token");
     window.location.href = "login.html";
 }
 
@@ -176,33 +181,87 @@ function limparFiltros() {
     renderizarDashboard();
 }
 
-// --- FUNÇÃO DE LOGIN ---
-function realizarLogin(event) {
+// --- FUNÇÃO DE LOGIN COM WEBHOOK N8N ---
+async function realizarLogin(event) {
     event.preventDefault();
+    
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
+    const btn = document.querySelector('.btn-login');
+    const errorMsg = document.getElementById('login-error');
 
-    if(email && senha) {
-        const btn = document.querySelector('.btn-login');
-        btn.innerText = 'Entrando...';
-        btn.style.opacity = '0.8';
-        setTimeout(() => {
+    // Reseta estado visual
+    errorMsg.style.display = 'none';
+
+    if(!email || !senha) {
+        errorMsg.innerText = "Por favor, preencha todos os campos.";
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    // UI de Carregamento
+    const textoOriginal = btn.innerText;
+    btn.innerText = 'Autenticando...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(N8N_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                senha: senha
+            })
+        });
+
+        // Tenta fazer o parse do JSON
+        const data = await response.json();
+
+        // LÓGICA: O n8n deve retornar um JSON com a propriedade "token" em caso de sucesso
+        if (response.ok && data.token) {
+            // Sucesso: Salva Token e Redireciona
+            localStorage.setItem('jwt_token', data.token);
             window.location.href = "index.html"; 
-        }, 800);
-    } else {
-        alert("Por favor, preencha todos os campos.");
+        } else {
+            // Erro de credenciais (ou erro retornado pelo n8n)
+            throw new Error(data.message || "Usuário ou senha inválidos.");
+        }
+
+    } catch (error) {
+        console.error("Erro no login:", error);
+        errorMsg.innerText = "Usuário ou senha inválidos. Tente novamente.";
+        errorMsg.style.display = 'block';
+        
+        // Restaura botão
+        btn.innerText = textoOriginal;
+        btn.style.opacity = '1';
+        btn.disabled = false;
     }
 }
 
-// --- INICIALIZAÇÃO ---
+// --- INICIALIZAÇÃO E SEGURANÇA ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Verifica se estamos na página de dashboard (procurando um elemento único dela)
+    // Verifica se estamos na página de dashboard
     const isDashboard = document.getElementById('lista-quitados');
 
     if (isDashboard) {
+        // SEGURANÇA: Se não tiver token, manda pro login
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            window.location.href = "login.html";
+            return; // Para execução
+        }
+
         renderizarDashboard();
         // Event Listeners do Dashboard
         document.getElementById('global-inicio').addEventListener('change', renderizarDashboard);
         document.getElementById('global-fim').addEventListener('change', renderizarDashboard);
+    } else {
+        // Estamos na tela de login, verificar se já tem token (opcional: auto-login)
+        // const token = localStorage.getItem('jwt_token');
+        // if(token) window.location.href = "index.html";
     }
 });
