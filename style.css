@@ -4,7 +4,7 @@
     --primary-text: #1f2937;
     --secondary-text: #64748b;
     --color-green: #10b981;
-    --color-blue: #001970; /* Azul Marinho Solicitado */
+    --color-blue: #001970;
     --color-blue-light: #e0e7ff;
     --color-dark: #1e293b;
     --color-red: #ef4444;
@@ -22,23 +22,22 @@ body {
     min-height: 100vh;
 }
 
-/* =========================================
-   NAVBAR & GERAL
-   ========================================= */
 .navbar {
     background-color: #001970;
     padding: 1rem 2rem;
     display: flex; justify-content: space-between; align-items: center;
     box-shadow: 0 4px 15px rgba(0, 25, 112, 0.3);
-    position: relative; /* Não fixa ao rolar */
-    z-index: 100;
+    position: relative; z-index: 100;
 }
 
 .logo-img { 
-    height: 45px; 
-    width: auto; 
-    display: block;
+    height: 45px; width: auto; display: block;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* --- MENU DE PERFIL (Dropdown) --- */
+.user-menu-container {
+    position: relative;
 }
 
 .regional-badge {
@@ -46,11 +45,83 @@ body {
     color: #001970;
     padding: 8px 16px; border-radius: 50px;
     font-weight: 700; font-size: 0.9rem;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer; /* Indica clique */
+    transition: background-color 0.2s, transform 0.2s;
 }
 
-/* Filtro Global */
+.regional-badge:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-1px);
+}
+
+.arrow-icon {
+    font-size: 0.8rem;
+    color: #64748b;
+    transition: transform 0.2s;
+}
+
+/* Gira a setinha quando ativo */
+.regional-badge.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* Caixa do Dropdown */
+.dropdown-menu {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: white;
+    width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 10px;
+    display: none; /* Oculto por padrão */
+    flex-direction: column;
+    z-index: 200;
+    border: 1px solid #f1f5f9;
+}
+
+/* Classe para mostrar o menu */
+.dropdown-menu.show {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-header {
+    padding: 10px;
+    display: flex; flex-direction: column;
+}
+.dropdown-header strong { font-size: 0.9rem; color: var(--primary-text); }
+.dropdown-header span { font-size: 0.75rem; color: var(--secondary-text); }
+
+.dropdown-menu hr {
+    border: none; border-top: 1px solid #f1f5f9;
+    margin: 5px 0;
+}
+
+.dropdown-item {
+    padding: 10px;
+    color: var(--color-red); /* Vermelho para logout */
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #fef2f2;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ---------------------------------- */
+
 .global-filter-bar {
     max-width: 1400px; margin: 24px auto; padding: 16px 24px;
     background: #ffffff; border-radius: 20px;
@@ -80,15 +151,13 @@ body {
 }
 .btn-clear:hover { background-color: #fee2e2; color: var(--color-red); transform: translateY(-1px); }
 
-/* =========================================
-   DASHBOARD GRID & CARDS
-   ========================================= */
+/* Grid Principal */
 .dashboard-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 24px;
     max-width: 1400px; margin: 0 auto; padding: 0 20px;
-    align-items: stretch; /* Estica cards para mesma altura */
+    align-items: stretch;
 }
 
 .card {
@@ -115,10 +184,9 @@ body {
 
 /* Cores de Cabeçalho */
 .header-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-.header-blue { background: linear-gradient(135deg, #001970 0%, #002299 100%); } /* Azul Marinho */
+.header-blue { background: linear-gradient(135deg, #001970 0%, #002299 100%); } 
 .header-dark { background: linear-gradient(135deg, #334155 0%, #0f172a 100%); }
 
-/* ÁREA DE SCROLL (Listas) */
 .card-body.scrollable-area {
     padding: 0;
     height: 340px; 
@@ -142,7 +210,6 @@ body {
 .client-date { font-size: 0.8rem; color: #94a3b8; margin-top: 3px; font-weight: 500; } 
 .client-val { font-weight: 700; color: var(--color-dark); font-family: 'Poppins', sans-serif; font-size: 1.05rem; }
 
-/* Rodapé dos Cards */
 .card-footer {
     padding: 20px 24px; background-color: #f8fafc;
     margin-top: auto;
@@ -157,7 +224,6 @@ body {
 .highlight-green .value { color: var(--color-green); }
 .highlight-blue .value { color: var(--color-blue); }
 
-/* FECHAMENTO MENSAL */
 .finance-grid {
     padding: 24px;
     display: grid; 
@@ -182,18 +248,16 @@ body {
 .text-success { color: var(--color-green); }
 .text-danger { color: var(--color-red); }
 
-/* =========================================
-   PÁGINA DE LOGIN
-   ========================================= */
+/* PÁGINA DE LOGIN (Sem rolagem) */
 .login-body {
     background: linear-gradient(135deg, #001970 0%, #002299 100%);
-    min-height: 100vh;
-    display: flex; justify-content: center; align-items: center; padding: 20px;
+    height: 100vh; width: 100vw; overflow: hidden;
+    display: flex; justify-content: center; align-items: center; padding: 0; margin: 0;
 }
-.login-wrapper { width: 100%; max-width: 400px; }
+.login-wrapper { width: 100%; max-width: 400px; padding: 20px; }
 .login-card {
     background: white; padding: 40px; border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); text-align: center;
 }
 .login-header { margin-bottom: 30px; }
 .login-logo { height: 60px; width: auto; margin: 0 auto 20px; display: block; }
@@ -218,13 +282,11 @@ body {
     cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif;
 }
 .btn-login:hover { background-color: #002299; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 25, 112, 0.3); }
-.login-footer { margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
-.login-footer p { font-size: 0.8rem; color: #94a3b8; }
 
 /* Mobile */
 @media (max-width: 768px) {
     .dashboard-wrapper { grid-template-columns: 1fr; }
-    .card { height: auto; } /* Altura auto no mobile */
+    .card { height: auto; }
     .card-body.scrollable-area { height: 300px; }
     .finance-grid { height: auto; padding-bottom: 20px; }
     .navbar { flex-direction: column; gap: 15px; align-items: flex-start; }
@@ -233,4 +295,6 @@ body {
     .date-input { width: 100%; }
     .ate { display: none; }
     .btn-clear { margin-left: 0; justify-content: center; background-color: #e2e8f0; }
+    .login-body { padding: 0; }
+    .login-wrapper { max-width: 100%; }
 }
