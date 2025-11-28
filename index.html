@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard HBS</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <img src="img/hbs..png" alt="Logo HBS" class="logo-img">
+        </div>
+        <div class="regional-badge">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Regional de Diadema</span>
+        </div>
+    </nav>
+
+    <div class="global-filter-bar">
+        <div class="filter-label">
+            <i class="far fa-calendar-alt"></i>
+            <span>Filtrar Período:</span>
+        </div>
+        <div class="filter-inputs">
+            <input type="date" id="global-inicio" class="date-input">
+            <span class="ate">até</span>
+            <input type="date" id="global-fim" class="date-input">
+        </div>
+        <button class="btn-clear" onclick="limparFiltros()">Limpar</button>
+    </div>
+
+    <main class="dashboard-wrapper">
+        
+        <div class="card card-quitados">
+            <div class="card-header header-blue">
+                <div class="header-icon"><i class="fas fa-check-circle"></i></div>
+                <h2>Contratos Quitados</h2>
+            </div>
+            <div class="card-body scrollable-area">
+                <ul class="client-list" id="lista-quitados">
+                    </ul>
+            </div>
+            <div class="card-footer">
+                <div class="summary-box">
+                    <span class="label">Total Faturado</span>
+                    <strong class="value" id="total-quitados">R$ 0,00</strong>
+                </div>
+                <div class="summary-box highlight-blue">
+                    <span class="label">Setup 40%</span>
+                    <strong class="value" id="setup-quitados">R$ 0,00</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-ativos">
+            <div class="card-header header-blue">
+                <div class="header-icon"><i class="fas fa-users"></i></div>
+                <h2>Clientes Ativos</h2>
+            </div>
+            <div class="card-body scrollable-area">
+                <ul class="client-list" id="lista-ativos">
+                    </ul>
+            </div>
+            <div class="card-footer">
+                <div class="summary-box">
+                    <span class="label">Total Faturado</span>
+                    <strong class="value" id="total-ativos">R$ 0,00</strong>
+                </div>
+                <div class="summary-box highlight-blue">
+                    <span class="label">Setup 30%</span>
+                    <strong class="value" id="setup-ativos">R$ 0,00</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-fechamento">
+            <div class="card-header header-dark">
+                <div class="header-icon"><i class="fas fa-chart-line"></i></div>
+                <h2>Fechamento Mensal</h2>
+            </div>
+            <div class="finance-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Quitados</span>
+                    <strong class="stat-value" id="fin-quitados">...</strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Entradas</span>
+                    <strong class="stat-value text-success" id="fin-entradas">...</strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Carteira</span>
+                    <strong class="stat-value" id="fin-carteira">...</strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Total Bruto</span>
+                    <strong class="stat-value" id="fin-bruto">...</strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Ponto de Equilíbrio</span>
+                    <strong class="stat-value" id="fin-ponto">...</strong>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">À Pagar</span>
+                    <strong class="stat-value text-danger" id="fin-pagar">...</strong>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
