@@ -1,6 +1,5 @@
 // --- BANCO DE DADOS SIMULADO ---
 const dadosDashboard = {
-    // 1. Dados de Contratos Quitados
     contratosQuitados: [
         { nome: "Academia Fitness Plus", valor: 5000, data: "2023-10-01" },
         { nome: "Padaria do João", valor: 3200, data: "2023-10-05" },
@@ -10,8 +9,6 @@ const dadosDashboard = {
         { nome: "Oficina do Pedro", valor: 2800, data: "2023-11-10" },
         { nome: "Supermercado Extra", valor: 15000, data: "2023-11-25" }
     ],
-    
-    // 2. Dados de Clientes Ativos
     clientesAtivos: [
         { nome: "Lava Rápido Jet", valor: 1500, data: "2023-09-10" },
         { nome: "Mercado Central", valor: 8900, data: "2023-09-15" },
@@ -20,8 +17,6 @@ const dadosDashboard = {
         { nome: "Loja de Roupas Style", valor: 4100, data: "2023-11-05" },
         { nome: "Auto Peças Brasil", valor: 6700, data: "2023-11-12" }
     ],
-
-    // 3. Dados de Despesas (À Pagar)
     despesas: [
         { descricao: "Aluguel", valor: 2000, data: "2023-10-05" },
         { descricao: "Energia", valor: 500, data: "2023-10-10" },
@@ -60,6 +55,32 @@ function itemNoPeriodo(dataItemStr) {
     return dataItem >= dataInicio && dataItem <= dataFim;
 }
 
+// --- MENU PROFILE ---
+function toggleMenu() {
+    const dropdown = document.getElementById("userDropdown");
+    const badge = document.querySelector(".regional-badge");
+    dropdown.classList.toggle("show");
+    badge.classList.toggle("active");
+}
+
+function logout() {
+    // Simula logout e vai para login
+    window.location.href = "login.html";
+}
+
+// Fecha o menu se clicar fora
+window.onclick = function(event) {
+    if (!event.target.closest('.user-menu-container')) {
+        const dropdown = document.getElementById("userDropdown");
+        const badge = document.querySelector(".regional-badge");
+        if (dropdown && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+            badge.classList.remove('active');
+        }
+    }
+}
+
+
 // --- RENDERIZAÇÃO DO DASHBOARD ---
 function renderizarDashboard() {
     renderizarQuitados();
@@ -69,7 +90,7 @@ function renderizarDashboard() {
 
 function renderizarQuitados() {
     const listaEl = document.getElementById('lista-quitados');
-    if(!listaEl) return; // Segurança
+    if(!listaEl) return; 
 
     listaEl.innerHTML = ''; 
     const filtrados = dadosDashboard.contratosQuitados.filter(item => itemNoPeriodo(item.data));
