@@ -18,20 +18,20 @@
             
             <div class="login-header">
                 <img src="img/Design sem nome (15) (1).png" alt="HBS Logo" class="login-logo">
-                <h2>Bem-vindo!</h2>
-                <p>Acesse o painel da franquia</p>
+                <h2>Portal do Franqueado</h2>
+                <p>Identifique-se para acessar</p>
             </div>
 
-            <div id="login-error" class="error-msg" style="display: none;">
-                Usuário ou senha inválidos.
-            </div>
+            <div id="login-error" class="error-msg" style="display: none;"></div>
 
-            <form id="form-login" onsubmit="realizarLogin(event)">
+            <!-- novalidate para deixar o JS/N8N validar -->
+            <form id="form-login" onsubmit="realizarLogin(event)" novalidate>
                 <div class="input-group">
-                    <label for="email">E-mail</label>
+                    <label for="usuario">ID Usuário</label>
                     <div class="input-box">
-                        <i class="far fa-envelope"></i>
-                        <input type="email" id="email" placeholder="exemplo@hbs.com.br" required>
+                        <i class="fas fa-user-circle"></i>
+                        <!-- Input type number para teclado numérico -->
+                        <input type="number" id="usuario" placeholder="Digite seu número de acesso" required>
                     </div>
                 </div>
 
@@ -48,7 +48,7 @@
                 </div>
 
                 <button type="submit" class="btn-login">
-                    Acessar Dashboard
+                    Entrar
                 </button>
             </form>
             
