@@ -39,47 +39,57 @@
         </div>
     </nav>
 
+    <!-- FILTRO DE PERÍODO -->
     <div class="global-filter-bar">
         <div class="filter-label">
-            <i class="fas fa-sync-alt"></i>
-            <span>Dados Atualizados</span>
+            <i class="fas fa-calendar-alt"></i>
+            <span>Período</span>
         </div>
         <div class="filter-inputs">
-           <span style="font-size: 0.9rem; color: #64748b;">Visualizando fechamento atual</span>
+            <button class="filter-btn" onclick="aplicarFiltroPeriodo(7)">7 dias</button>
+            <button class="filter-btn" onclick="aplicarFiltroPeriodo(15)">15 dias</button>
+            <button class="filter-btn active" onclick="aplicarFiltroPeriodo(30)">30 dias</button>
+            <button class="filter-btn" onclick="aplicarFiltroPeriodo(60)">60 dias</button>
         </div>
-        <button class="btn-clear" onclick="carregarDadosDashboard()">
+        <button class="btn-clear" onclick="carregarDadosDashboard(30)">
             <i class="fas fa-redo"></i> Atualizar
         </button>
     </div>
 
     <main class="dashboard-wrapper">
         
+        <!-- ✅ CONTRATOS QUITADOS (COM COMISSÃO) -->
         <div class="card card-quitados">
             <div class="card-header header-blue">
                 <div class="header-icon"><i class="fas fa-check-circle"></i></div>
-                <h2>Contratos Quitados</h2>
+                <h2>Contratos Quitados (Setup)</h2>
             </div>
             <div class="card-body scrollable-area">
-                <ul class="client-list" id="lista-quitados">
+                <ul class="client-list client-list-detailed" id="lista-quitados">
                     <li style="padding: 20px; text-align: center; color: #999;">Carregando...</li>
                 </ul>
             </div>
-            <div class="card-footer">
+            <div class="card-footer card-footer-three">
                 <div class="summary-box">
                     <span class="label">Total Bruto</span>
                     <strong class="value" id="val-quitados-bruto">...</strong>
                 </div>
-                <div class="summary-box highlight-blue">
+                <div class="summary-box">
                     <span class="label">Total Repasse</span>
-                    <strong class="value" id="val-quitados-repasse">...</strong>
+                    <strong class="value text-success" id="val-quitados-repasse">...</strong>
+                </div>
+                <div class="summary-box highlight-blue">
+                    <span class="label">Comissão Seller</span>
+                    <strong class="value" id="val-quitados-comissao">...</strong>
                 </div>
             </div>
         </div>
 
+        <!-- CLIENTES ATIVOS (SEM COMISSÃO) -->
         <div class="card card-ativos">
             <div class="card-header header-blue">
                 <div class="header-icon"><i class="fas fa-users"></i></div>
-                <h2>Clientes Ativos</h2>
+                <h2>Clientes Ativos (Mensalidades)</h2>
             </div>
             <div class="card-body scrollable-area">
                 <ul class="client-list" id="lista-ativos">
@@ -89,42 +99,12 @@
             <div class="card-footer">
                 <div class="summary-box">
                     <span class="label">Total Repasse</span>
-                    <strong class="value" id="val-ativos-repasse">...</strong>
+                    <strong class="value text-success" id="val-ativos-repasse">...</strong>
                 </div>
                 <div class="summary-box highlight-blue">
-                    <span class="label">Percentual</span>
+                    <span class="label">Percentual Médio</span>
                     <strong class="value" id="val-ativos-percentual">...</strong>
                 </div>
-            </div>
-        </div>
-
-        <div class="card card-fechamento">
-            <div class="card-header header-dark">
-                <div class="header-icon"><i class="fas fa-wallet"></i></div>
-                <h2>Resumo Financeiro</h2>
-            </div>
-            <div class="finance-grid">
-                
-                <div class="stat-card">
-                    <span class="stat-label">Total Bruto (Setup)</span>
-                    <strong class="stat-value" id="fin-bruto-setup">...</strong>
-                </div>
-                
-                <div class="stat-card">
-                    <span class="stat-label">Repasse (Setup)</span>
-                    <strong class="stat-value text-success" id="fin-repasse-setup">...</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span class="stat-label">Repasse (Ativos)</span>
-                    <strong class="stat-value text-success" id="fin-repasse-ativos">...</strong>
-                </div>
-
-                <div class="stat-card">
-                    <span class="stat-label">Minha Comissão</span>
-                    <strong class="stat-value highlight-blue" style="color: var(--color-blue); font-size: 1.4rem;" id="fin-comissao-total">...</strong>
-                </div>
-
             </div>
         </div>
 
@@ -134,5 +114,3 @@
 
 </body>
 </html>
-
-

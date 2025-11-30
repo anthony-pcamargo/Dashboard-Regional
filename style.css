@@ -229,3 +229,249 @@ input[type=number] { -moz-appearance: textfield; }
     .login-body { padding: 0; }
     .login-wrapper { max-width: 100%; }
 }
+/* ✅ LAYOUT DETALHADO DOS CONTRATOS QUITADOS */
+.client-list-detailed li {
+    padding: 20px 24px !important;
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+}
+
+.client-list-detailed .client-info {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.client-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.detail-item {
+    font-size: 0.85rem;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.detail-item i {
+    color: var(--color-blue);
+    font-size: 0.9rem;
+}
+
+.detail-item.comissao {
+    background-color: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+    font-weight: 600;
+}
+
+.detail-item.comissao i {
+    color: #f59e0b;
+}
+
+/* ✅ FOOTER COM 3 COLUNAS */
+.card-footer-three {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 12px;
+}
+
+/* ✅ PERCENTUAL NOS CLIENTES ATIVOS */
+.client-percentual {
+    font-size: 0.8rem;
+    color: var(--color-green);
+    font-weight: 700;
+    background-color: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+/* ✅ BOTÕES DE FILTRO DE PERÍODO */
+.filter-btn {
+    background-color: #f1f5f9;
+    border: 2px solid transparent;
+    color: var(--secondary-text);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background-color: var(--color-blue);
+    color: white;
+    border-color: var(--color-blue);
+}
+
+/* ✅ RESPONSIVO - Mobile */
+@media (max-width: 768px) {
+    .card-footer-three {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .client-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .detail-item {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+/* ✅ LAYOUT DETALHADO (Quitados e Ativos) */
+.client-list-detailed li {
+    padding: 20px 24px !important;
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+}
+
+.client-list-detailed .client-info {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ✅ HEADER DO CLIENTE (Nome + Badge de Tipo) */
+.client-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.client-type-badge {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* ✅ DETALHES DO CLIENTE */
+.client-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.detail-item {
+    font-size: 0.85rem;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.detail-item i {
+    color: var(--color-blue);
+    font-size: 0.9rem;
+}
+
+/* ✅ COMISSÃO SELLER (amarelo) */
+.detail-item.comissao {
+    background-color: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.detail-item.comissao i {
+    color: #f59e0b;
+}
+
+/* ✅ PERCENTUAL (verde) */
+.detail-item.percentual {
+    background-color: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.detail-item.percentual i {
+    color: #10b981;
+}
+
+/* ✅ FOOTER COM 3 COLUNAS */
+.card-footer-three {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 12px;
+}
+
+/* ✅ BOTÕES DE FILTRO DE PERÍODO */
+.filter-btn {
+    background-color: #f1f5f9;
+    border: 2px solid transparent;
+    color: var(--secondary-text);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background-color: #e2e8f0;
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background-color: var(--color-blue);
+    color: white;
+    border-color: var(--color-blue);
+}
+
+/* ✅ RESPONSIVO - Mobile */
+@media (max-width: 768px) {
+    .card-footer-three {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .client-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .detail-item {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .client-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .client-type-badge {
+        align-self: flex-start;
+    }
+}

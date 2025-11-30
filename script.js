@@ -44,11 +44,11 @@ window.onclick = function(event) {
 }
 
 // --- LÓGICA DO DASHBOARD (CARREGAMENTO) ---
-async function carregarDadosDashboard() {
+async function carregarDadosDashboard(periodo = 30) {
     const token = checarSessao();
     if (!token) return;
 
-    console.log("Solicitando dados ao n8n...");
+    console.log(`Solicitando dados (${periodo} dias)...`);
 
     try {
         const response = await fetch(N8N_DATA_URL, {
@@ -56,13 +56,14 @@ async function carregarDadosDashboard() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 'token': token, 
-                'periodo': '30'
+                'periodo': periodo
             })
         });
 
         if (response.status === 401 || response.status === 403) {
             alert("Sessão expirada. Faça login novamente.");
-            throw new Error("Token inválido");
+            logout();
+            return;
         }
 
         if (!response.ok) {
@@ -72,68 +73,51 @@ async function carregarDadosDashboard() {
         const data = await response.json();
         console.log("📦 DADOS RECEBIDOS:", data);
 
-        // --- CORREÇÃO AQUI (O SEGREDO DO PRINT) ---
-        // O n8n está enviando dentro de um objeto { Rsposta: { ... } }
-        // Verificamos se existe data.Rsposta, senão tentamos pegar direto.
+        // Se vier como array, pega primeiro elemento
+        let dadosReais = Array.isArray(data) ? data[0] : data;
         
-        let dadosReais = null;
-
-        if (data.Rsposta) {
-            // Caso venha { Rsposta: { ... } }
-            dadosReais = data.Rsposta;
-        } else if (Array.isArray(data) && data[0] && data[0].Rsposta) {
-            // Caso venha [ { Rsposta: { ... } } ]
-            dadosReais = data[0].Rsposta;
-        } else if (Array.isArray(data)) {
-            // Caso venha [ { ... } ] direto
-            dadosReais = data[0];
-        } else {
-            // Caso venha { ... } direto
-            dadosReais = data;
-        }
-        // ------------------------------------------
-        
-        console.log("✅ DADOS PROCESSADOS:", dadosReais); // Para confirmar no console
+        console.log("✅ DADOS PROCESSADOS:", dadosReais);
         renderizarTela(dadosReais);
 
     } catch (error) {
         console.error("Erro ao carregar:", error);
+        alert("Erro ao carregar dados. Tente novamente.");
     }
 }
 
 function renderizarTela(dados) {
     if (!dados) return;
 
-    // 1. CONTRATOS QUITADOS
-    const quitados = dados.Contratos_Quitados || {};
-    preencherLista('lista-quitados', quitados.Clientes, 'Valor_Bruto');
+    // 0. MOSTRAR REGIONAL
+    const nomeRegional = dados.Regional || "Minha Regional";
+    const badgeEl = document.querySelector(".regional-badge span");
+    if (badgeEl) badgeEl.innerText = nomeRegional;
+
+    // 1. CONTRATOS QUITADOS (com comissão)
+    preencherListaQuitados('lista-quitados', dados.Contratos_Quitados);
     
-    setText('val-quitados-bruto', quitados.Total_Bruto_Setup);
-    setText('val-quitados-repasse', quitados.Total_Repasse_Setup);
+    const totaisQuitados = dados.Totais_Contratos_Quitados || {};
+    setText('val-quitados-bruto', totaisQuitados.Total_Bruto_Setup);
+    setText('val-quitados-repasse', totaisQuitados.Total_Repasse_Setup);
+    setText('val-quitados-comissao', dados.Comissao_Seller_Total);
 
-    // 2. CLIENTES ATIVOS
-    const ativos = dados.Clientes_Ativos || {};
-    preencherLista('lista-ativos', ativos.Clientes, 'valor_bruto');
-
-    setText('val-ativos-repasse', ativos.Total_Repasse_Ativos);
-    setText('val-ativos-percentual', ativos.Repasse_Percentual || "0%");
-
-    // 3. RESUMO FINANCEIRO
-    const comissao = dados.Comissao_Seller || {};
-
-    setText('fin-bruto-setup', quitados.Total_Bruto_Setup);
-    setText('fin-repasse-setup', quitados.Total_Repasse_Setup);
-    setText('fin-repasse-ativos', ativos.Total_Repasse_Ativos);
-    setText('fin-comissao-total', comissao.Total_Comissao_Seller);
+    // 2. CLIENTES ATIVOS (✅ agora detalhados, sem comissão)
+    preencherListaAtivos('lista-ativos', dados.Clientes_Ativos);
+    
+    const totaisAtivos = dados.Totais_Clientes_Ativos || {};
+    setText('val-ativos-bruto', totaisAtivos.Total_Bruto_Ativos); // ✅ NOVO
+    setText('val-ativos-repasse', totaisAtivos.Total_Repasse_Ativos);
+    setText('val-ativos-percentual', totaisAtivos.Percentual_Medio);
 }
 
-// Função auxiliar para preencher texto sem quebrar se o ID não existir
+// Função auxiliar para preencher texto
 function setText(id, valor) {
     const el = document.getElementById(id);
     if (el) el.innerText = formatarValorVindoDoJson(valor);
 }
 
-function preencherLista(elementId, arrayDados, chaveValor) {
+// ✅ FUNÇÃO - Lista de Quitados COM comissão
+function preencherListaQuitados(elementId, arrayDados) {
     const listaEl = document.getElementById(elementId);
     if (!listaEl) return;
     
@@ -146,16 +130,75 @@ function preencherLista(elementId, arrayDados, chaveValor) {
 
     arrayDados.forEach(item => {
         const li = document.createElement('li');
-        const valorExibir = item[chaveValor] || "R$ 0,00";
-
+        
         li.innerHTML = `
             <div class="client-info">
                 <span class="client-name">${item.Cliente}</span>
+                <div class="client-details">
+                    <span class="detail-item">
+                        <i class="fas fa-dollar-sign"></i> Bruto: ${item.Valor_Bruto}
+                    </span>
+                    <span class="detail-item">
+                        <i class="fas fa-hand-holding-usd"></i> Repasse: ${item.Valor_Repasse}
+                    </span>
+                    <span class="detail-item comissao">
+                        <i class="fas fa-coins"></i> Comissão Seller: ${item.Comissao_Seller}
+                    </span>
+                </div>
             </div>
-            <span class="client-val">${valorExibir}</span>
         `;
         listaEl.appendChild(li);
     });
+}
+
+// ✅ NOVA FUNÇÃO - Lista de Ativos DETALHADA (sem comissão)
+function preencherListaAtivos(elementId, arrayDados) {
+    const listaEl = document.getElementById(elementId);
+    if (!listaEl) return;
+    
+    listaEl.innerHTML = ''; 
+
+    if (!arrayDados || arrayDados.length === 0) {
+        listaEl.innerHTML = '<li style="justify-content:center; color:#999;">Nenhum registro.</li>';
+        return;
+    }
+
+    arrayDados.forEach(item => {
+        const li = document.createElement('li');
+        
+        li.innerHTML = `
+            <div class="client-info">
+                <div class="client-header">
+                    <span class="client-name">${item.Cliente}</span>
+                    <span class="client-type-badge">${item.Cliente_tipo}</span>
+                </div>
+                <div class="client-details">
+                    <span class="detail-item">
+                        <i class="fas fa-dollar-sign"></i> Bruto: ${item.Valor_Bruto}
+                    </span>
+                    <span class="detail-item">
+                        <i class="fas fa-hand-holding-usd"></i> Repasse: ${item.Valor_Repasse}
+                    </span>
+                    <span class="detail-item percentual">
+                        <i class="fas fa-percentage"></i> ${item.Percentual_Individual}
+                    </span>
+                </div>
+            </div>
+        `;
+        listaEl.appendChild(li);
+    });
+}
+
+// --- FILTRO DE PERÍODO
+function aplicarFiltroPeriodo(dias) {
+    // Atualizar UI do botão ativo
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Recarregar dados
+    carregarDadosDashboard(dias);
 }
 
 // --- LÓGICA DE LOGIN ---
@@ -201,7 +244,24 @@ async function realizarLogin(event) {
     }
 }
 
+// ✅ PROTEÇÃO DE ROTA
 document.addEventListener('DOMContentLoaded', () => {
+    const paginaAtual = window.location.pathname;
+    const token = localStorage.getItem('jwt_token');
+    
+    // Se está no dashboard sem token
+    if (paginaAtual.includes('index.html') && !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Se está no login com token
+    if (paginaAtual.includes('login.html') && token) {
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    // Carregar dashboard se estiver na página certa
     if (document.getElementById('lista-quitados')) {
         carregarDadosDashboard();
     }
